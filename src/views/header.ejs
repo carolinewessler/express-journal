@@ -1,0 +1,40 @@
+<head>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/main.js" defer></script>
+</head>
+
+<header>
+  <h1>News Hub</h1>
+  
+  <div class="container">
+    <a class="topic" href="/politics">Politics</a>
+
+    <% if (user) { %>
+      <a class="topic" href="/cars">Cars</a>
+      <a class="topic" href="/gossip">Gossip</a>
+    <% } %>
+  </div>
+
+  <div class="auth-area">
+    <% if (user) { %>
+      <span>Hi, <%= user.name %>!</span>
+      <form action="/logout" method="POST" style="display:inline">
+        <button type="submit" id="logoutButton">Logout</button>
+      </form>
+    <% } else { %>
+      <span id="loginButton">Login</span>
+    <% } %>
+  </div>
+
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <h2>Login</h2>
+      <form id="loginForm">
+        <input type="text" id="loginUser" name="login" placeholder="login">
+        <input type="password" id="loginPass" name="senha" placeholder="senha">
+        <button type="submit" id="submitLogin">Entrar</button>
+      </form>
+    </div>
+  </div>
+  
+</header>

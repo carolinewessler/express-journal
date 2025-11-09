@@ -1,0 +1,83 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: monospace;
+}   
+    
+body {
+  font-family: Arial, sans-serif;
+  background-color: rgb(255, 255, 255);
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: yellowgreen;
+  padding: 24px;
+}
+
+.container {
+  display: flex;
+  gap: 15px;
+  font-size: 18px;
+}
+
+.auth-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.mainPageTitle {
+    text-align: center;
+    margin: 20px;
+    font-size: 24px;
+}
+#loginButton {
+    cursor: pointer;
+    border: 1px solid black;
+    padding: 4px;
+    background-color: lightgreen;
+}
+
+#logoutButton {
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50px;
+    font-size: 12px;
+}
+.modal.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  width: 300px;
+}
+
+.modal-content input {
+  width: 90%;
+  margin: 5px 0;
+  padding: 8px;
+}
