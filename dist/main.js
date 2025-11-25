@@ -4,9 +4,12 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import mainPage from './routes/mainPage.js';
 import loginRoute from './routes/loginRoute.js';
+import registerRoute from './routes/registerRoute.js';
 import { autenticarExclusive } from './middlewares/autenticarExclusive.js';
 import dotenv from 'dotenv';
 dotenv.config();
+// IMPORTANTE: cria o banco e executa as tabelas
+import '../database/login/usersDB.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const app = express();
@@ -26,6 +29,11 @@ app.set('view engine', 'ejs');
 app.set('views', join(__dirname, '../src/views'));
 app.get('/', mainPage); // página inicial
 app.use('/login', loginRoute); // login
+app.get('/register', (req, res) => {
+    const user = req.session.user;
+    res.render('register', { user });
+});
+app.use('/register', registerRoute);
 app.get('/exclusive/:id', autenticarExclusive, (req, res) => {
     const { id } = req.params;
     const user = req.session.user;

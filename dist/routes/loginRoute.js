@@ -1,25 +1,27 @@
-import { Router } from "express";
-const router = Router();
-router.post('/', (req, res) => {
-    const { login, senha } = req.body;
-    // lê variáveis do .env
-    const adminUser = process.env.LOGIN_ADMIN;
-    const adminPass = process.env.LOGIN_PASSWORD;
-    const exclusiveUser = process.env.LOGIN_EXCLUSIVE;
-    const exclusivePass = process.env.EXCLUSIVE_PASSWORD;
-    // login admin
-    if (login === adminUser && senha === adminPass) {
-        req.session.user = { name: login, role: 'admin' };
-        console.log(`${login} autenticado com sucesso`);
-        return res.redirect('/');
+import express from 'express';
+import bcrypt from 'bcryptjs';
+import { usersDB } from '../database/login/usersDB.js';
+const router = express.Router();
+router.get('/login', (req, res) => {
+    res.render('login'); // tua view EJS de login
+});
+router.post('/login', async (req, res) => {
+    const { login, password } = req.body;
+    // 1. buscar usuário no banco
+    const stmt = usersDB.prepare('SELECT * FROM users WHERE login = ?');
+    const user = stmt.get(login);
+    if (!user) {
+        return res.status(400).send('Login ou senha inválidos.');
     }
-    // login exclusive
-    if (login === exclusiveUser && senha === exclusivePass) {
-        req.session.user = { name: login, role: 'exclusive' };
-        console.log(`${login} autenticado com sucesso`);
-        return res.redirect('/exclusive/dashboard');
+    // 2. comparar a senha digitada com o hash
+    const isValid = await bcrypt.compare(password, user.password_hash);
+    if (!isValid) {
+        return res.status(400).send('Login ou senha inválidos.');
     }
-    res.send('<h1>Login inválido</h1><a href="/">Voltar</a>');
+    // 3. salvar info na sessão (exemplo)
+    // @ts-ignore
+    req.session.userId = user.id;
+    res.redirect('/area-restrita'); // ou página principal logada
 });
 export default router;
 //# sourceMappingURL=loginRoute.js.map

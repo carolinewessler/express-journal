@@ -1,33 +1,44 @@
-import { Router } from "express";
-import type { Request, Response } from "express";
+import express from 'express';
+import bcrypt from 'bcryptjs';
 
-const router = Router();
+import { usersDB } from '../database/login/usersDB.js';
+import type { Request, Response } from 'express';
 
-router.post('/', (req: Request, res: Response) => {
-  const { login, senha } = req.body;
+interface User {
+  id: number;
+  login: string;
+  password_hash: string;
+}
 
-  // lê variáveis do .env
-  const adminUser = process.env.LOGIN_ADMIN;
-  const adminPass = process.env.LOGIN_PASSWORD;
+const router = express.Router();
 
-  const exclusiveUser = process.env.LOGIN_EXCLUSIVE;
-  const exclusivePass = process.env.EXCLUSIVE_PASSWORD;
+router.get('/login', (req: Request, res: Response) => {
+  res.render('login'); // tua view EJS de login
+});
 
-  // login admin
-  if (login === adminUser && senha === adminPass) {
-    (req.session as any).user = { name: login, role: 'admin' };
-    console.log(`${login} autenticado com sucesso`);
-    return res.redirect('/');
+router.post('/login', async (req: Request, res: Response) => {
+  const { login, password } = req.body;
+
+  // 1. buscar usuário no banco
+  const stmt = usersDB.prepare('SELECT * FROM users WHERE login = ?');
+  const user = stmt.get(login) as User | undefined;
+
+  if (!user) {
+    return res.status(400).send('Login ou senha inválidos.');
   }
 
-  // login exclusive
-  if (login === exclusiveUser && senha === exclusivePass) {
-    (req.session as any).user = { name: login, role: 'exclusive' };
-    console.log(`${login} autenticado com sucesso`);
-    return res.redirect('/exclusive/dashboard');
+  // 2. comparar a senha digitada com o hash
+  const isValid = await bcrypt.compare(password, user.password_hash);
+
+  if (!isValid) {
+    return res.status(400).send('Login ou senha inválidos.');
   }
 
-  res.send('<h1>Login inválido</h1><a href="/">Voltar</a>');
+  // 3. salvar info na sessão (exemplo)
+  // @ts-ignore
+  req.session.userId = user.id;
+
+  res.redirect('/area-restrita'); // ou página principal logada
 });
 
 export default router;

@@ -1,13 +1,18 @@
 import express from 'express';
-import type { Request, Response, NextFunction } from 'express';
+import type { Request, Response } from 'express';
 import session from 'express-session';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import mainPage from './routes/mainPage.js';
 import loginRoute from './routes/loginRoute.js';
+import registerRoute from './routes/registerRoute.js';
 import { autenticarExclusive } from './middlewares/autenticarExclusive.js';
 import dotenv from 'dotenv';
 dotenv.config();
+
+// IMPORTANTE: cria o banco e executa as tabelas
+import '../database/login/usersDB.js';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -33,6 +38,12 @@ app.set('views', join(__dirname, '../src/views'));
 
 app.get('/', mainPage); // página inicial
 app.use('/login', loginRoute); // login
+
+app.get('/register', (req: Request, res: Response) => {
+  const user = (req.session as any).user;
+  res.render('register', { user });
+});
+app.use('/register', registerRoute);
 
 app.get('/exclusive/:id', autenticarExclusive, (req, res) => {
   const { id } = req.params as { id: string };

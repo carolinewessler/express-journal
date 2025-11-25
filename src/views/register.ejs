@@ -1,0 +1,14 @@
+<%- include('./header') %>
+
+<div class="registerContainer">
+    <h2>Register</h2>
+    <form action="/register" method="POST" class="registerForm">
+        <label for="login">login:</label>
+        <input type="text" id="login" name="login" required>
+
+        <label for="password">password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">register</button>
+    </form>
+</div>
