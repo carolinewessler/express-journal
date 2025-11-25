@@ -34,8 +34,6 @@ app.set('views', join(__dirname, '../src/views'));
 app.get('/', mainPage); // página inicial
 app.use('/login', loginRoute); // login
 
-
-
 app.get('/exclusive/:id', autenticarExclusive, (req, res) => {
   const { id } = req.params as { id: string };
   const user = (req.session as any).user;

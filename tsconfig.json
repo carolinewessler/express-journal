@@ -14,8 +14,7 @@
     "types": ["node", "express"],
 
     "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
+    "declaration": false,
 
     "strict": true,
     "isolatedModules": true,
